@@ -1,46 +1,112 @@
-# Getting Started with Create React App
+# React Hooks
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## useState
 
-## Available Scripts
+The useState hook allows you to add state to a functional component. It takes an initial value as an argument and returns an array with two elements: the current state value and a function to update it.
 
-In the project directory, you can run:
+### Example
 
-### `npm start`
+```js
+import React, { useState } from 'react';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+function Counter() {
+  const [count, setCount] = useState(0);
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+  const increment = () => {
+    setCount(count + 1);
+  };
+  const decrement = () => {
+    setCount(count - 1);
+  };
 
-### `npm test`
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>decrement</button>
+    </div>
+  );
+}
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## useEffect
 
-### `npm run build`
+The useEffect hook allows you to perform side effects in a functional component. Side effects include things like fetching data from an API, updating the DOM, or subscribing to an event.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Example
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```js
+import React, { useState, useEffect } from 'react';
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+function DataFetcher() {
+  const [data, setData] = useState([]);
 
-### `npm run eject`
+  useEffect(() => {
+    fetch('https://api.example.com/data')
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  return (
+    <ul>
+      {data.map((item) => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## useContext
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The useContext hook allows you to access a context object in a functional component. Context is a way to pass data down the component tree without having to pass props manually.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Example
 
-## Learn More
+```js
+import { createContext, useContext } from 'react';
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const ThemeContext = createContext(null);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+export default function MyApp() {
+  return (
+    <ThemeContext.Provider value='dark'>
+      <Form />
+    </ThemeContext.Provider>
+  );
+}
+
+function Form() {
+  return (
+    <Panel title='Welcome'>
+      <Button>Sign up</Button>
+      <Button>Log in</Button>
+    </Panel>
+  );
+}
+
+function Panel({ title, children }) {
+  const theme = useContext(ThemeContext);
+  const className = 'panel-' + theme;
+  return (
+    <section className={className}>
+      <h1>{title}</h1>
+      {children}
+    </section>
+  );
+}
+
+function Button({ children }) {
+  const theme = useContext(ThemeContext);
+  const className = 'button-' + theme;
+  return <button className={className}>{children}</button>;
+}
+```
+
+## useReducer
+
+5. useRef
+6. useMemo
+   `Returns a memoized value when dependency changes`
+7. useCallback
+   `Returns a memoized function when dependency changes`
